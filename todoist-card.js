@@ -625,13 +625,12 @@ class TodoistCard extends LitElement {
                                     icon="mdi:circle-medium"
                                 ></ha-icon>`}
                             <div class="todoist-item-text">
-                                ${item.content ? html`<span class="todoist-item-content">${item.content}</span>` : null}
+                                ${item.priority ? item.priority == 4 ? html`<span class="todoist-item-priority-${item.priority}"><ha-icon icon="mdi:flag-variant"></ha-icon><span style="color:white;">${item.content ? item.content : null }</span></span>`
+                                   : item.priority == 3 ? html`<span class="todoist-item-priority-${item.priority}"><ha-icon icon="mdi:flag-variant"></ha-icon><span style="color:white;">${item.content ? item.content : null }</span></span>` 
+                                   : item.priority == 2 ? html`<span class="todoist-item-priority-${item.priority}"><ha-icon icon="mdi:flag-variant"></ha-icon><span style="color:white;">${item.content ? item.content : null }</span></span>` 
+                                   : item.priority == 1 ? html`<span style="color:white;">${item.content ? item.content : null }</span>` 
+                                   : html`<span>${item.content}</span>` : null}
                                 ${item.description ? html`<span class="todoist-item-description">${item.description}</span>` : null}
-                                ${item.due ? html`<span class="todoist-item-due">${item.due.date}</span>` : null}
-
-                                <!-- Added by Jon Griffith -->
-                                ${item.priority ? html`<span class="todoist-item-due">${item.priority}</span>` : null} 
-                                <!-- End Add -->
 
                             </div>
                             ${(this.config.show_item_delete === undefined) || (this.config.show_item_delete !== false)
@@ -728,11 +727,27 @@ class TodoistCard extends LitElement {
                 margin: -12px 0 -25px;
             }
 
+            .todoist-item-priority-4 {
+                color: red;
+            }
+
+            .todoist-item-priority-3 {
+                color: orange;
+            }
+            
+            .todoist-item-priority-2 {
+                color: blue;
+            }
+
+            .todoist-item-priority-1 {
+                color: white;
+            }
+
             .todoist-item-description {
                 display: block;
                 opacity: 0.5;
                 font-size: 12px !important;
-                margin: -15px 0;
+                margin: -25px 0px -10px;
             }
 
             .todoist-item-due {
