@@ -64,6 +64,15 @@ class TodoistCardEditor extends LitElement {
         return true;
     }
 
+// Added by Jon Griffith
+    get _sort_by_task_priority() {
+        if (this.config) {
+            return this.config.sort_by_task_priority || false;
+        }
+        return false;
+    }
+// End Add
+
     get _only_today_overdue() {
         if (this.config) {
             return this.config.only_today_overdue || false;
@@ -87,6 +96,16 @@ class TodoistCardEditor extends LitElement {
 
         return false;
     }
+
+// Added by Jon Griffith
+    get _priority_ascending_order() {
+        if (this.config) {
+            return this.config.priority_ascending_order || false;
+        }
+
+        return false;
+   }
+// End Add
 
     get _custom_days_filter() {
         if (this.config) {
@@ -257,6 +276,31 @@ class TodoistCardEditor extends LitElement {
                 <span>Only show today or overdue</span>
             </div>
 
+<!-- Added by Jon Griffith -->
+
+            <div class="option">
+                <ha-switch
+                    .checked=${(this.config.sort_by_task_priority !== undefined) && (this.config.sort_by_task_priority !== false)}
+                    .configValue=${'sort_by_task_priority'}
+                    @change=${this.valueChanged}
+                >
+                </ha-switch>
+                <span>Sort by task priority</span>
+            </div>
+
+            ${this.config.sort_by_task_priority === true ? html`
+            <div class="option">
+            <ha-switch
+                .checked=${(this.config.priority_ascending_order !== undefined) && (this.config.priority_ascending_order !== false)}
+                .configValue=${'priority_ascending_order'}
+                @change=${this.valueChanged}
+            >
+            </ha-switch>
+            <span>Sort by priority in ascending order, otherwise descending</span>
+            </div>` : null }
+
+<!-- End Add -->
+
             <div class="option">
                 <ha-switch
                     .checked=${(this.config.sort_by_due_date !== undefined) && (this.config.sort_by_due_date !== false)}
@@ -277,6 +321,7 @@ class TodoistCardEditor extends LitElement {
                 </ha-switch>
                 <span>Sort by due date in ascending order, otherwise descending</span>
             </div>` : null }
+            
             <div class="option">
                 <ha-select
                     naturalMenuWidth
@@ -529,7 +574,21 @@ class TodoistCard extends LitElement {
                 return 0;
             });
         }
-        
+    
+
+        if (this.config.sort_by_task_priority) {
+            items.sort((a, b) => {
+                if (a.priority && b.priority) {                  
+                    if (this.config.priority_ascending_order){ 
+                        return a.priority - b.priority;
+                    }
+                    return b.priority - a.priority;
+                }
+
+                return 0;
+            });
+        }
+
         if (this.config.custom_days_filter !== -1) {
             const days_out = this.config.custom_days_filter;
             items = items.filter(item => {
@@ -569,6 +628,11 @@ class TodoistCard extends LitElement {
                                 ${item.content ? html`<span class="todoist-item-content">${item.content}</span>` : null}
                                 ${item.description ? html`<span class="todoist-item-description">${item.description}</span>` : null}
                                 ${item.due ? html`<span class="todoist-item-due">${item.due.date}</span>` : null}
+
+                                <!-- Added by Jon Griffith -->
+                                ${item.priority ? html`<span class="todoist-item-due">${item.priority}</span>` : null} 
+                                <!-- End Add -->
+
                             </div>
                             ${(this.config.show_item_delete === undefined) || (this.config.show_item_delete !== false)
                                 ? html`<ha-icon-button
