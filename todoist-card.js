@@ -88,11 +88,19 @@ class TodoistCardEditor extends LitElement {
         return false;
     }
 
-    get _custom_days_filter() {
+    get _sliding_window_start() {
         if (this.config) {
-            return this.config.custom_days_filter || -1;
+            return this.config.sliding_window_start || 0;
         }
         
+        return 0;
+    }
+
+    get _sliding_window_end() {
+        if (this.config) {
+            return this.config.sliding_window_end || -1;
+        }
+
         return -1;
     }
     
@@ -155,7 +163,8 @@ class TodoistCardEditor extends LitElement {
         
         const entities = this.getEntitiesByType('sensor');
         const completedCount = [...Array(16).keys()];
-        const daysOut = [-1, ...Array(90).keys()];
+        const slidingWindowStart = [...Array(90).keys()];
+        const slidingWindowEnd = [-1, ...Array(91).keys()];
 
         return html`<div class="card-config">
             <div class="option">
@@ -277,18 +286,36 @@ class TodoistCardEditor extends LitElement {
                 </ha-switch>
                 <span>Sort by due date in ascending order, otherwise descending</span>
             </div>` : null }
+
             <div class="option">
                 <ha-select
                     naturalMenuWidth
                     fixedMenuPosition
-                    label="Only show tasks due within the next X days (-1 to disable, 0 for today, 1 for tomorrow, etc)"
+                    label="Sliding window start (0 for today, 1 for tomorrow, etc)"
                     @selected=${this.valueChanged}
                     @closed=${(event) => event.stopPropagation()}
-                    .configValue=${'custom_days_filter'}
-                    .value=${this._custom_days_filter}
+                    .configValue=${'sliding_window_start'}
+                    .value=${this._sliding_window_start}
                 >
             
-                ${daysOut.map(days => {
+                ${slidingWindowStart.map(days => {
+                    return html`<mwc-list-item .value="${days}">${days}</mwc-list-item>`;
+                })}
+                </ha-select>
+            </div>
+
+            <div class="option">
+                <ha-select
+                    naturalMenuWidth
+                    fixedMenuPosition
+                    label="Sliding window end (-1 to disable, 0 for today, 1 for tomorrow, etc)"
+                    @selected=${this.valueChanged}
+                    @closed=${(event) => event.stopPropagation()}
+                    .configValue=${'sliding_window_end'}
+                    .value=${this._sliding_window_end}
+                >
+            
+                ${slidingWindowEnd.map(days => {
                     return html`<mwc-list-item .value="${days}">${days}</mwc-list-item>`;
                 })}
                 </ha-select>
@@ -530,15 +557,18 @@ class TodoistCard extends LitElement {
             });
         }
         
-        if (this.config.custom_days_filter !== -1) {
-            const days_out = this.config.custom_days_filter;
+        if (this.config.slidingWindowEnd !== -1) {
+            const sliding_window_start = this.config.slidingWindowStart;
+            const sliding_window_end = this.config.slidingWindowEnd;
             items = items.filter(item => {
                 if (item.due) {
                     if (/^\d{4}-\d{2}-\d{2}$/.test(item.due.date)) {
                         item.due.date += 'T00:00:00';
                     }
-                    
-                    return (new Date()).setHours(23, 59, 59, 999) + (days_out * 24 * 60 * 60 * 1000) >= (new Date(item.due.date)).getTime();
+
+                    const days_out = (new Date(item.due.date)).getTime() - (new Date()).getTime();
+                    return (new Date()).setHours(23, 59, 59, 999) + (days_out * 24 * 60 * 60 * 1000) >= (new Date()).setHours(23, 59, 59, 999) + (sliding_window_start * 24 * 60 * 60 * 1000) &&
+                        (new Date()).setHours(23, 59, 59, 999) + (days_out * 24 * 60 * 60 * 1000) <= (new Date()).setHours(23, 59, 59, 999) + (sliding_window_end * 24 * 60 * 60 * 1000);
                 }
 
                 return false;
