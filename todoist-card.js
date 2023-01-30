@@ -560,15 +560,21 @@ class TodoistCard extends LitElement {
         if (this.config.sliding_window_end > -1 && this.config.sliding_window_start !== undefined && this.config.sliding_window_start <= this.config.sliding_window_end) {
             const sliding_window_start = this.config.sliding_window_start;
             const sliding_window_end = this.config.sliding_window_end;
+
+            const currentTime = new Date();
+            const start = new Date(currentTime);
+            start.setDate(start.getDate() + sliding_window_start);
+            const end = new Date(currentTime);
+            end.setDate(end.getDate() + sliding_window_end);
+
             items = items.filter(item => {
                 if (item.due) {
                     if (/^\d{4}-\d{2}-\d{2}$/.test(item.due.date)) {
                         item.due.date += 'T00:00:00';
                     }
 
-                    const days_out = (new Date(item.due.date)).getTime() - (new Date()).getTime();
-                    return (new Date()).setHours(23, 59, 59, 999) + (days_out * 24 * 60 * 60 * 1000) >= (new Date()).setHours(23, 59, 59, 999) + (sliding_window_start * 24 * 60 * 60 * 1000) &&
-                        (new Date()).setHours(23, 59, 59, 999) + (days_out * 24 * 60 * 60 * 1000) <= (new Date()).setHours(23, 59, 59, 999) + (sliding_window_end * 24 * 60 * 60 * 1000);
+                    const dueDate = new Date(item.due.date);
+                    return start <= dueDate && dueDate <= end;
                 }
 
                 return false;
