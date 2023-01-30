@@ -304,6 +304,7 @@ class TodoistCardEditor extends LitElement {
                 </ha-select>
             </div>
 
+            ${this.config.sliding_window_start !== -1 ? html`
             <div class="option">
                 <ha-select
                     naturalMenuWidth
@@ -319,7 +320,7 @@ class TodoistCardEditor extends LitElement {
                     return html`<mwc-list-item .value="${days}">${days}</mwc-list-item>`;
                 })}
                 </ha-select>
-            </div>
+            </div>` : null }
 
         </div>`;
     }
