@@ -595,9 +595,10 @@ class TodoistCard extends LitElement {
                                         icon="mdi:circle-medium"
                                     ></ha-icon>`}
                                 <div class="todoist-item-text">
-                                    ${item.content ? html`<span class="todoist-item-content">${item.content}</span>` : null}
-                                    ${item.description ? html`<span class="todoist-item-description">${item.description}</span>` : null}
-                                    ${item.due ? html`<span class="todoist-item-due">${item.due.date}</span>` : null}
+                                ${item.description || item.due
+                                    ? html`<span class="todoist-item-content">${item.content}</span>
+                                        <span class="todoist-item-description">${[item.description, item.due?.date].filter().join(' | ')}</span>`
+                                    : item.content}
                                 </div>
                                 ${(this.config.show_item_delete === undefined) || (this.config.show_item_delete !== false)
                                     ? html`<ha-icon-button
