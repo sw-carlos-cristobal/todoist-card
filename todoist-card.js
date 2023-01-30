@@ -567,8 +567,10 @@ class TodoistCard extends LitElement {
                 const currentTime = new Date();
                 const start = new Date(currentTime);
                 start.setDate(start.getDate() + sliding_window_start);
+                start.setHours(0, 0, 0, 0);
                 const end = new Date(currentTime);
                 end.setDate(end.getDate() + sliding_window_end);
+                end.setHours(23, 59, 59, 999);
 
                 items = items.filter(item => {
                     if (item.due) {
