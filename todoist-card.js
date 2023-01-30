@@ -557,9 +557,9 @@ class TodoistCard extends LitElement {
             });
         }
         
-        if (this.config.slidingWindowEnd !== -1) {
-            const sliding_window_start = this.config.slidingWindowStart;
-            const sliding_window_end = this.config.slidingWindowEnd;
+        if (this.config.sliding_window_end !== -1) {
+            const sliding_window_start = this.config.sliding_window_start;
+            const sliding_window_end = this.config.sliding_window_end;
             items = items.filter(item => {
                 if (item.due) {
                     if (/^\d{4}-\d{2}-\d{2}$/.test(item.due.date)) {
