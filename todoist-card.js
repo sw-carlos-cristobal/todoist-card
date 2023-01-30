@@ -90,7 +90,7 @@ class TodoistCardEditor extends LitElement {
 
     get _sliding_window_start() {
         if (this.config) {
-            return this.config.sliding_window_start || -1;
+            return this.config.sliding_window_start !== undefined ? this.config.sliding_window_start : -1;
         }
         
         return -1;
@@ -98,7 +98,7 @@ class TodoistCardEditor extends LitElement {
 
     get _sliding_window_end() {
         if (this.config) {
-            return this.config.sliding_window_end || -1;
+            return this.config.sliding_window_end !== undefined ? this.config.sliding_window_end : -1;
         }
 
         return -1;
@@ -557,7 +557,7 @@ class TodoistCard extends LitElement {
             });
         }
         
-        if ((this.config.sliding_window_end > -1) && 
+        if ((this.config.sliding_window_end > -1) &&
             (this.config.sliding_window_start > -1) && 
             (this.config.sliding_window_start <= this.config.sliding_window_end)) {
 
