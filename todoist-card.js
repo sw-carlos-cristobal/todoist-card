@@ -90,10 +90,10 @@ class TodoistCardEditor extends LitElement {
 
     get _sliding_window_start() {
         if (this.config) {
-            return this.config.sliding_window_start || 0;
+            return this.config.sliding_window_start || -1;
         }
         
-        return 0;
+        return -1;
     }
 
     get _sliding_window_end() {
@@ -163,7 +163,7 @@ class TodoistCardEditor extends LitElement {
         
         const entities = this.getEntitiesByType('sensor');
         const completedCount = [...Array(16).keys()];
-        const slidingWindowStart = [...Array(90).keys()];
+        const slidingWindowStart = [-1,...Array(91).keys()];
         const slidingWindowEnd = [-1, ...Array(91).keys()];
 
         return html`<div class="card-config">
@@ -291,7 +291,7 @@ class TodoistCardEditor extends LitElement {
                 <ha-select
                     naturalMenuWidth
                     fixedMenuPosition
-                    label="Sliding window start (0 for today, 1 for tomorrow, etc)"
+                    label="Sliding window start (-1 to disable, 0 for today, 1 for tomorrow, etc)"
                     @selected=${this.valueChanged}
                     @closed=${(event) => event.stopPropagation()}
                     .configValue=${'sliding_window_start'}
@@ -557,28 +557,31 @@ class TodoistCard extends LitElement {
             });
         }
         
-        if (this.config.sliding_window_end > -1 && this.config.sliding_window_start !== undefined && this.config.sliding_window_start <= this.config.sliding_window_end) {
-            const sliding_window_start = this.config.sliding_window_start;
-            const sliding_window_end = this.config.sliding_window_end;
+        if ((this.config.sliding_window_end > -1) && 
+            (this.config.sliding_window_start > -1) && 
+            (this.config.sliding_window_start <= this.config.sliding_window_end)) {
 
-            const currentTime = new Date();
-            const start = new Date(currentTime);
-            start.setDate(start.getDate() + sliding_window_start);
-            const end = new Date(currentTime);
-            end.setDate(end.getDate() + sliding_window_end);
+                const sliding_window_start = this.config.sliding_window_start;
+                const sliding_window_end = this.config.sliding_window_end;
 
-            items = items.filter(item => {
-                if (item.due) {
-                    if (/^\d{4}-\d{2}-\d{2}$/.test(item.due.date)) {
-                        item.due.date += 'T00:00:00';
+                const currentTime = new Date();
+                const start = new Date(currentTime);
+                start.setDate(start.getDate() + sliding_window_start);
+                const end = new Date(currentTime);
+                end.setDate(end.getDate() + sliding_window_end);
+
+                items = items.filter(item => {
+                    if (item.due) {
+                        if (/^\d{4}-\d{2}-\d{2}$/.test(item.due.date)) {
+                            item.due.date += 'T00:00:00';
+                        }
+
+                        const dueDate = new Date(item.due.date);
+                        return start <= dueDate && dueDate <= end;
                     }
 
-                    const dueDate = new Date(item.due.date);
-                    return start <= dueDate && dueDate <= end;
-                }
-
-                return false;
-            });
+                    return false;
+                });
         }
         
         return html`<ha-card>
