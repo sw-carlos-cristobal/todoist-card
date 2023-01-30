@@ -557,7 +557,7 @@ class TodoistCard extends LitElement {
             });
         }
         
-        if (this.config.sliding_window_end !== -1) {
+        if (this.config.sliding_window_end > -1 && this.config.sliding_window_start !== undefined && this.config.sliding_window_start <= this.config.sliding_window_end) {
             const sliding_window_start = this.config.sliding_window_start;
             const sliding_window_end = this.config.sliding_window_end;
             items = items.filter(item => {
