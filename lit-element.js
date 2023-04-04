@@ -53,11 +53,11 @@
      *
      * @packageDocumentation
      */
-import { render } from "./shady-render.js";
+import { render } from "./shady-render.js?module";
 import { UpdatingElement } from "./lib/updating-element.js?module";
 export * from "./lib/updating-element.js?module";
 export * from "./lib/decorators.js?module";
-export { html, svg, TemplateResult, SVGTemplateResult } from "https://unpkg.com/lit-html@^1.1.1/lit-html.js?module";
+export { html, svg, TemplateResult, SVGTemplateResult } from "./lit-html.js?module";
 import { supportsAdoptingStyleSheets, unsafeCSS } from "./lib/css-tag.js?module";
 export * from "./lib/css-tag.js?module";
 // IMPORTANT: do not change the property name or the assignment expression.
