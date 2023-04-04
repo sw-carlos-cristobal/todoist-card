@@ -53,7 +53,7 @@
      *
      * @packageDocumentation
      */
-import { render } from "https://unpkg.com/lit-html@^1.1.1/lib/shady-render.js?module";
+import { render } from "./shady-render.js";
 import { UpdatingElement } from "./lib/updating-element.js?module";
 export * from "./lib/updating-element.js?module";
 export * from "./lib/decorators.js?module";
