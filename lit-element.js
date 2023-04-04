@@ -53,7 +53,7 @@
      *
      * @packageDocumentation
      */
-import { render } from "./shady-render.js?module";
+import { render } from "./shady-render";
 import { UpdatingElement } from "./lib/updating-element.js?module";
 export * from "./lib/updating-element.js?module";
 export * from "./lib/decorators.js?module";

@@ -1,4 +1,4 @@
-import { LitElement, html, css } from './lit-element.js?module';
+import { LitElement, html, css } from './lit-element';
 
 class TodoistCardEditor extends LitElement {
     static get properties() {
